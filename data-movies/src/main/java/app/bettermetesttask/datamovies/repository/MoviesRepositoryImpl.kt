@@ -6,7 +6,10 @@ import app.bettermetesttask.datamovies.repository.stores.MoviesRestStore
 import app.bettermetesttask.domaincore.utils.Result
 import app.bettermetesttask.domainmovies.entries.Movie
 import app.bettermetesttask.domainmovies.repository.MoviesRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class MoviesRepositoryImpl @Inject constructor(
@@ -18,6 +21,7 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun getMovies(): Result<List<Movie>> {
         return Result.of {
+            Timber.i("loadMovies: ${localStore.getMovies()}")
             localStore.getMovies().map { item ->
                 item.let {
                     Movie(
@@ -46,5 +50,13 @@ class MoviesRepositoryImpl @Inject constructor(
 
     override suspend fun removeMovieFromFavorites(movieId: Int) {
         localStore.dislikeMovie(movieId)
+    }
+
+    override suspend fun refresh() {
+        withContext(Dispatchers.IO) {
+            restStore.getMovies().let {
+                Timber.i("refresh movies: $it")
+            }
+        }
     }
 }

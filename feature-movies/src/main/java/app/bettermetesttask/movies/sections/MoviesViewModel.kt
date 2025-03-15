@@ -10,9 +10,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MoviesViewModel @Inject constructor(
@@ -31,7 +30,9 @@ class MoviesViewModel @Inject constructor(
         GlobalScope.launch {
             observeMoviesUseCase()
                 .collect { result ->
+                    Timber.i("loadMovies: ${result}")
                     if (result is Result.Success) {
+                        Timber.i("loadMovies result: ${result.data}")
                         moviesMutableFlow.emit(MoviesState.Loaded(result.data))
                         adapter.submitList(result.data)
                     }

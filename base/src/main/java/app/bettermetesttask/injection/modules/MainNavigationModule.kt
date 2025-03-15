@@ -1,32 +1,22 @@
 package app.bettermetesttask.injection.modules
 
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import app.bettermetesttask.R
-import app.bettermetesttask.featurecommon.injection.scopes.ActivityScope
+
 import app.bettermetesttask.navigation.HomeCoordinator
 import app.bettermetesttask.navigation.HomeCoordinatorImpl
 import app.bettermetesttask.navigation.HomeNavigator
 import app.bettermetesttask.navigation.HomeNavigatorImpl
-import app.bettermetesttask.sections.home.HomeActivity
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
 @Module
-class MainNavigationModule {
+@InstallIn(ActivityComponent::class)
+abstract class MainNavigationModule {
 
-    @Provides
-    @ActivityScope
-    fun provideNavController(activity: HomeActivity): NavController =
-        Navigation.findNavController(activity, R.id.mainNavigationFragment)
+    @Binds
+    abstract fun bindNavigator(navigatorImpl: HomeNavigatorImpl): HomeNavigator
 
-    @Provides
-    fun bindNavigator(navigatorImpl: HomeNavigatorImpl): HomeNavigator {
-        return navigatorImpl
-    }
-
-    @Provides
-    fun bindCoordinator(coordinatorImpl: HomeCoordinatorImpl): HomeCoordinator {
-        return coordinatorImpl
-    }
+    @Binds
+    abstract fun bindCoordinator(coordinatorImpl: HomeCoordinatorImpl): HomeCoordinator
 }

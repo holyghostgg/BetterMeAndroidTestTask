@@ -5,23 +5,25 @@ import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import app.bettermetesttask.R
 import app.bettermetesttask.featurecommon.base.OnBackPressedHandler
+import app.bettermetesttask.workers.SyncWorker
 import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class HomeActivity : AppCompatActivity(R.layout.activity_main), HasAndroidInjector {
-
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+@AndroidEntryPoint
+class HomeActivity : AppCompatActivity(R.layout.activity_main) {
 
     private lateinit var navController: NavController
     private lateinit var navHostFragment: NavHostFragment
     private val navListener: NavController.OnDestinationChangedListener = initNavListener()
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,7 @@ class HomeActivity : AppCompatActivity(R.layout.activity_main), HasAndroidInject
 
     override fun onDestroy() {
         navController.removeOnDestinationChangedListener(navListener)
+        SyncWorker.stop()
         super.onDestroy()
     }
 
@@ -44,8 +47,6 @@ class HomeActivity : AppCompatActivity(R.layout.activity_main), HasAndroidInject
             super.onBackPressed()
         }
     }
-
-    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 
     @Suppress("unused")
     private fun colorStatusBar(@IdRes fragmentId: Int) {
@@ -64,9 +65,7 @@ class HomeActivity : AppCompatActivity(R.layout.activity_main), HasAndroidInject
 
             //as soon as any fragment except for splash shows up we can safely change window background
             // checking for LayerDrawable to avoid redundant background changes
-            if (destination.id != R.id.fragmentSplash
-                && window.decorView.background is LayerDrawable
-            ) {
+            if (destination.id != R.id.fragmentSplash && window.decorView.background is LayerDrawable) {
                 window.setBackgroundDrawableResource(R.color.main_black)
             }
         }

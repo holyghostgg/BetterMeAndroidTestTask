@@ -1,30 +1,37 @@
 package app.bettermetesttask
 
 import android.app.Application
+import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
 import app.bettermetesttask.featurecommon.initializers.AppInitializers
-import app.bettermetesttask.featurecommon.injection.utils.AppInjector
-import app.bettermetesttask.injection.components.DaggerAppComponent
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import androidx.work.Configuration
+import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
-class AndroidTestTaskApp : Application(), HasAndroidInjector {
+@HiltAndroidApp
+class AndroidTestTaskApp : Application(), Configuration.Provider {
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var appInitializers: AppInitializers
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
+
+    companion object {
+        lateinit var appContext: Context
+            private set
+    }
 
     override fun onCreate() {
         super.onCreate()
-        AppInjector.init(this) {
-            DaggerAppComponent.builder().application(this).appContext(this)
-                .build().inject(this)
-        }
-
+        appContext = applicationContext
         appInitializers.init(this)
     }
-
-    override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector
 }

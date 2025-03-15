@@ -9,7 +9,7 @@ ext {
     recyclerViewVer = '1.1.0'
     constraintLayoutVer = '2.0.4'
     browserVer = '1.2.0'
-    workManagerVer = '2.4.0'
+    workManagerVer = '2.8.1'
 
     // Compose
     composeCompilerVer = '1.5.15'

@@ -10,11 +10,11 @@ class MoviesRestStore @Inject constructor() {
     private val statusCodes = listOf(200, 201, 202, 304, 400)
 
     suspend fun getMovies(): List<Movie> {
-        val statusCode = statusCodes.random()
-        if (statusCode >= 400) {
-            throw IllegalStateException("Did not manage to retrieve movies")
-        }
-        delay(Random.nextLong(500, 3_000))
+//        val statusCode = statusCodes.random()
+//        if (statusCode >= 400) {
+//            throw IllegalStateException("Did not manage to retrieve movies")
+//        }
+//        delay(Random.nextLong(500, 3_000))
         return MoviesFactory.createMoviesList()
     }
 }

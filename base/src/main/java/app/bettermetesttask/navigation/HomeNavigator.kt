@@ -1,11 +1,13 @@
 package app.bettermetesttask.navigation
 
+import android.util.Log
 import androidx.navigation.NavController
 import app.bettermetesttask.R
 import app.bettermetesttask.constants.TaskConstants
 import app.bettermetesttask.constants.TaskVariance
 import app.bettermetesttask.featurecommon.utils.navigation.executeSafeNavAction
 import dagger.Lazy
+import timber.log.Timber
 import javax.inject.Inject
 
 interface HomeNavigator {

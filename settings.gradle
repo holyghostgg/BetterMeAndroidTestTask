@@ -1,3 +1,7 @@
-include ':base', ':network-core', ':domain-core', ':domain-movies', ':data-movies', ':feature-common',
-        ':feature-movies'
-rootProject.name='AndroidTestTask'
+include ':base'
+include ':network-core'
+include ':domain-core'
+include ':domain-movies'
+include ':data-movies'
+include ':feature-common'
+include ':feature-movies'

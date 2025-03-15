@@ -17,7 +17,19 @@ class MoviesRepositoryImpl @Inject constructor(
     private val restStore = MoviesRestStore()
 
     override suspend fun getMovies(): Result<List<Movie>> {
-        TODO("Not yet implemented")
+        return Result.of {
+            localStore.getMovies().map { item ->
+                item.let {
+                    Movie(
+                        id = it.id,
+                        title = it.title,
+                        description = it.description,
+                        posterPath = it.posterPath,
+                        liked = false
+                    )
+                }
+            }
+        }
     }
 
     override suspend fun getMovie(id: Int): Result<Movie> {
